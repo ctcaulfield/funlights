@@ -18,7 +18,15 @@ Christopher Caulfield (ctc98)
 
 **Rough Form**
 
-(To be added)
+Paper prototype:
+
+<img src='img/paperprototype.gif'>
+
+Whiteboard sketches:
+
+<img src='img/whiteboard1.JPG'>
+
+<img src='img/whiteboard2.JPG'>
 
 **Expected Parts**
 
