@@ -9,6 +9,7 @@ let host = 'api.cognitive.microsoft.com';
 let path = '/bing/v7.0/images/search';
 let perfectMatch = [];
 let almostMatch = [];
+let finalImageCollection = [];
 
 //this will be the Google Vision Term
 let term = 'bottle';
@@ -38,25 +39,35 @@ let response_handler = function (response) {
             if(width == height){
               perfectMatch.push(imageResults.value[i]);
             }
-
-            else if(num/den ){
+            //this collects squares that are almost a match
+            else if(num/den <= 1.10){
               almostMatch.push(imageResults.value[i]);
             }
+          //end of loop
           }
-          console.log(perfectMatch);
-          // 
-          // //greater than 5
-          // if(topImages.length > 5){
-          //
-          // }
-          // //less than 5
-          // else if(topImages.length < 5){
-          //
-          // }
-          // //5 total images
-          // else{
-          //
-          // }
+          //greater than 5
+          if(perfectMatch.length > 5){
+            finalImageCollection = perfectMatch.sort(function(a, b){
+              return a.height-b.height
+            })
+            finalImageCollection = finalImageCollection.slice(0, 5);
+          }
+          //less than 5
+          else if(perfectMatch.length < 5){
+            finalImageCollection = perfectMatch.sort(function(a, b){
+              return a.height-b.height
+            })
+
+            //TODO - sort other array and append up until finalImageCollection = 5
+
+          }
+          //5 total images
+          else{
+            finalImageCollection = perfectMatch.sort(function(a, b){
+              return a.height-b.height
+            })
+          }
+
           //   // let firstImageResult = imageResults.value[0];
             // console.log(`Image result count: ${imageResults.value.length}`);
             // console.log(`First image insightsToken: ${firstImageResult.imageInsightsToken}`);
