@@ -12,7 +12,7 @@ let almostMatch = [];
 let finalImageCollection = [];
 
 //this will be the Google Vision Term
-let term = 'bottle';
+let term = 'water';
 
 let response_handler = function (response) {
     let body = '';
@@ -45,28 +45,32 @@ let response_handler = function (response) {
             }
           //end of loop
           }
+
+          //sort image collection
+          finalImageCollection = perfectMatch.sort(function(a, b){
+            return a.height-b.height
+          })
+
           //greater than 5
-          if(perfectMatch.length > 5){
-            finalImageCollection = perfectMatch.sort(function(a, b){
-              return a.height-b.height
-            })
+          if(finalImageCollection.length > 5){
             finalImageCollection = finalImageCollection.slice(0, 5);
           }
           //less than 5
-          else if(perfectMatch.length < 5){
-            finalImageCollection = perfectMatch.sort(function(a, b){
+          else if(finalImageCollection.length < 5){
+
+            almostMatch = almostMatch.sort(function(a, b){
               return a.height-b.height
             })
 
-            //TODO - sort other array and append up until finalImageCollection = 5
+            while(finalImageCollection.length < 5){
+              var topElement = almostMatch.pop();
+              finalImageCollection.append(topElement);
+            }
+          }
 
-          }
-          //5 total images
-          else{
-            finalImageCollection = perfectMatch.sort(function(a, b){
-              return a.height-b.height
-            })
-          }
+          //the final image colelction - this is what will be returned
+          console.log(finalImageCollection.length);
+          console.log(finalImageCollection);
 
           //   // let firstImageResult = imageResults.value[0];
             // console.log(`Image result count: ${imageResults.value.length}`);
