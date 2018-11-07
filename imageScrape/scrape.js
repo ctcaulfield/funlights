@@ -7,9 +7,11 @@ let subscriptionKey = '501acff16f424807aac095d5be1522d6';
 
 let host = 'api.cognitive.microsoft.com';
 let path = '/bing/v7.0/images/search';
+let perfectMatch = [];
+let almostMatch = [];
 
 //this will be the Google Vision Term
-let term = 'mouse';
+let term = 'bottle';
 
 let response_handler = function (response) {
     let body = '';
@@ -18,12 +20,48 @@ let response_handler = function (response) {
     });
     response.on('end', function () {
         let imageResults = JSON.parse(body);
+        //console.log(imageResults);
         if (imageResults.value.length > 0) {
-            let firstImageResult = imageResults.value[0];
-            console.log(`Image result count: ${imageResults.value.length}`);
-            console.log(`First image insightsToken: ${firstImageResult.imageInsightsToken}`);
-            console.log(`First image thumbnail url: ${firstImageResult.thumbnailUrl}`);
-            console.log(`First image web search url: ${firstImageResult.webSearchUrl}`);
+          for(var i=0; i < imageResults.value.length; i++){
+            let width = imageResults.value[i].width;
+            let height = imageResults.value[i].height;
+            var num = width;
+            var den = height;
+
+            //ensure the numerator is greater than the denominator
+            if(width < height){
+              num = height;
+              den = width;
+            }
+
+            //check if the width and height is a square
+            if(width == height){
+              perfectMatch.push(imageResults.value[i]);
+            }
+
+            else if(num/den ){
+              almostMatch.push(imageResults.value[i]);
+            }
+          }
+          console.log(perfectMatch);
+          // 
+          // //greater than 5
+          // if(topImages.length > 5){
+          //
+          // }
+          // //less than 5
+          // else if(topImages.length < 5){
+          //
+          // }
+          // //5 total images
+          // else{
+          //
+          // }
+          //   // let firstImageResult = imageResults.value[0];
+            // console.log(`Image result count: ${imageResults.value.length}`);
+            // console.log(`First image insightsToken: ${firstImageResult.imageInsightsToken}`);
+            // console.log(`First image thumbnail url: ${firstImageResult.thumbnailUrl}`);
+            // console.log(`First image web search url: ${firstImageResult.webSearchUrl}`);
         }
         else {
             console.log("Couldn't find image results!");
@@ -40,7 +78,7 @@ let bing_image_search = function (search) {
   let request_params = {
         method : 'GET',
         hostname : host,
-        path : path + '?q=' + encodeURIComponent(search),
+        path : path + '?q=' + encodeURIComponent(search)+"&imageType=Clipart&size=small",
         headers : {
             'Ocp-Apim-Subscription-Key' : subscriptionKey,
         }
