@@ -50,6 +50,18 @@ The webcam will be attached to a wall at face height. The user can stand in fron
 
 **Learning Experience**
 
+*Panel shield soldering*
+
+<img src="https://cdn.sparkfun.com//assets/parts/1/2/9/4/4/14721-RGB_Panel_Shield-01.jpg" width="200">
+
+To make our lives easier, we bought a panel shield accessory that allows us to directly plug the LED panel into the Arduino. It required soldering about 30-40 different connections, and one piece was soldered backwards. It had to be de-soldered and flipped around in order to connect the panel correctly.
+
+*Magic smoke*
+
+<img src="https://i.imgur.com/PrfLmPY.png" width="500">
+
+When we first tried to power up the panel and Arduino, we mistakenly used a 9V adapter instead of the recommended 3-5V. This, possibly in combination with the backwards component, caused the panel to start smoking. The panel was partially burnt out as a result, and we have ordered another from SparkFun that should arrive next week.
+
 **Completed Work**
 
 **Next Steps**
