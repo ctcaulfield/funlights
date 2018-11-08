@@ -64,5 +64,10 @@ When we first tried to power up the panel and Arduino, we mistakenly used a 9V a
 
 **Completed Work**
 
+* Figured out correct setup for connecting LED panel and Arduino
+* Wrote script to download images and resize to 32x32
+
 **Next Steps**
 
+* Combine image search, Google Vision and image-resizing scripts to resize images retrieved from the API
+* Convert 32x32 image into an array of RGB values which can be sent to the LED panel
