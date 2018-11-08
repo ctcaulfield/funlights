@@ -41,3 +41,16 @@ Whiteboard sketches:
 **Interaction Plan**
 
 The webcam will be attached to a wall at face height. The user can stand in front of it or hold an object in front of it. The LED panel will automatically change based on the camera image. There will be a button the user can press to save the image. The LCD will display a URL the user can visit to see their 32x32 image.
+
+# Project Check-In - November 8
+
+**Interaction Diagram**
+
+**Interactive Device**
+
+**Learning Experience**
+
+**Completed Work**
+
+**Next Steps**
+
