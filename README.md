@@ -46,7 +46,13 @@ The webcam will be attached to a wall at face height. The user can stand in fron
 
 **Interaction Diagram**
 
+<img src="img/flow diagram.png">
+
 **Interactive Device**
+
+<img src="img/panel.gif">
+
+<img src="img/panel-back.JPG" width=400>
 
 **Learning Experience**
 
@@ -64,10 +70,13 @@ When we first tried to power up the panel and Arduino, we mistakenly used a 9V a
 
 **Completed Work**
 
+* Wrote code to obtain small images from image search API
 * Figured out correct setup for connecting LED panel and Arduino
-* Wrote script to download images and resize to 32x32
+* Wrote script to download images from an array of urls and resize to 32x32
 
 **Next Steps**
 
 * Combine image search, Google Vision and image-resizing scripts to resize images retrieved from the API
 * Convert 32x32 image into an array of RGB values which can be sent to the LED panel
+* Incorporate webcam and button into device to use webcam as source for the initial photo
+* Incoporate LCD panel into device to display instructions/feedback to the user
