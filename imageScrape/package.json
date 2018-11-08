@@ -17,9 +17,12 @@
   },
   "homepage": "https://github.com/ctcaulfield/funlights/issues",
   "dependencies": {
+    "del": "^3.0.0",
     "express": "^4.16.2",
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^2.3.0",
+    "image-download": "^1.1.0",
+    "node-base64-image": "^1.0.5",
     "node-webcam": "^0.4.3",
     "serialport": "^6.0.4",
     "sharp": "^0.21.0",

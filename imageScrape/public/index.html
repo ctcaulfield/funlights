@@ -3,8 +3,52 @@
     <head>
         <meta charset="utf8"/>
         <title>FunLights 32x32 Image</title>
+
+        <style>
+        body {
+          background: #333;
+          font-family: sans-serif;
+          text-align: center;
+        }
+
+        h1 {
+          font-weight: lighter;
+          color: #fff;
+        }
+
+        img {
+          margin: 50px;
+          image-rendering: pixelated;
+          border: 20px solid black;
+          box-shadow: 0px 0px 50px #fff;
+        }
+
+        </style>
     </head>
     <body>
-        <div id="grid"></div>
+      <div id="content">
+        <h1>FunLights</h1>
+        <img src='img/output0.png' width=400 height=400 />
+      </div>
     </body>
+
+    <script>
+    //rotate through images
+      var img = document.getElementsByTagName('img')[0];
+
+      function loop() {
+        setTimeout(function () {
+          img.src = 'img/output1.png';
+        }, 1000);
+        setTimeout(function () {
+          img.src = 'img/output2.png';
+        }, 2000);
+        setTimeout(function () {
+          img.src = 'img/output0.png';
+        }, 3000);
+      }
+
+      setInterval(loop, 3000);
+
+    </script>
 </html>
