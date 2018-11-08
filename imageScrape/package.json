@@ -1,0 +1,29 @@
+{
+  "name": "funlights",
+  "version": "0.0.1",
+  "description": "Distant webcamera controll over a website.",
+  "main": "imageProcessor.js",
+  "scripts": {
+    "test": "node imageProcessor.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ctcaulfield/funlights.git"
+  },
+  "author": "anon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ctcaulfield/funlights/issues"
+  },
+  "homepage": "https://github.com/ctcaulfield/funlights/issues",
+  "dependencies": {
+    "express": "^4.16.2",
+    "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^2.3.0",
+    "node-webcam": "^0.4.3",
+    "serialport": "^6.0.4",
+    "sharp": "^0.21.0",
+    "simple-thumbnail": "^1.3.3",
+    "socket.io": "^2.0.4"
+  }
+}
