@@ -6,11 +6,13 @@ var io = require('socket.io')(http); // connect websocket library to server
 var serverPort = 8000;
 
 // Image processing
-const sharp = require("sharp");
+//const sharp = require("sharp");
 const fs = require('fs');
 const imageDownload = require('image-download');
 const imageType = require('image-type');
-const del = require('del');
+//const del = require('del');
+const imageToRgbaMatrix = require('image-to-rgba-matrix');
+const resizeImg = require('resize-img');
 
 // use express to create the simple webapp
 app.use(express.static('public')); // find pages in public directory
@@ -33,29 +35,24 @@ function processImages() {
     // Download image from link
     imageDownload(imageArray[i]).then(buffer => {
       console.log(imageCount);
-      var filename = 'output' + imageCount + '.png';
-      fs.writeFile(filename, buffer, (err) => {
+      var filename = 'output' + imageCount;
+      fs.writeFile("public/img/" + filename + ".png", buffer, (err) => {
         if (err) {
           console.log(err);
         } else {
           console.log('saved image');
           resizeImage(filename);
-          imageCount += 1;
         }
       })
+      imageCount += 1;
     })
   }
 }
 
 // Resize image to 32x32
 function resizeImage(filename) {
-  sharp(filename).resize(32,32).toBuffer(function(err, buffer) {
-    fs.writeFile('public/img/' + filename, buffer, (err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log('resized image');
-      }
-    })
-  })
+  resizeImg(fs.readFileSync("public/img/" + filename + ".png"), {width: 32, height: 32}).then(buf => {
+    fs.writeFileSync('public/img/' + filename + '.png', buf);
+    imageToRgbaMatrix('public/img/' + filename + '.png').then(console.log);
+  });
 }
