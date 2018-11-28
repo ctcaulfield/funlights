@@ -134,6 +134,7 @@ io.on('connect', function(socket) {
         // console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
         // io.emit('facesResult',(numFaces));
         // callback(null, faces);
+        console.log(results);
         console.log(results[0].imagePropertiesAnnotation.dominantColors.colors);
 
       }).catch(err => {
