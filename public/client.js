@@ -1,13 +1,10 @@
 /*
 client.js
-
 Author: Nikolas Martelaro (nmartelaro@gmail.com)
 Extended: David Goeicke (da.goedicke@gmail.com)
 Purpose: This run the interactivity and communication for the web app. This file
 is served to the users web browser and executes on the browser.
-
 Usage: This file is called automatically when the webpage is served.
-
 //--Addition. Added a button handling for the `Take a picture` button.
 */
 
@@ -27,9 +24,22 @@ function ledOFF() {
 //-- Addition: Forward the `Take a picture` button-press to the webserver.
 function takePicture(){
   socket.emit('takePicture');
+
 }
 
 //-- Addition: This function receives the new image name and applies it to html element.
+
+socket.on('facesResult', function(msg) {
+  if(msg === 0){
+    document.getElementById("people").innerHTML = "LOL...not - good try";
+  }
+  else if(msg === 1){
+    document.getElementById("people").innerHTML = "Welcome!";
+  }
+  else {
+    document.getElementById("people").innerHTML = "A squad of " + msg + "no thx"
+  }
+});
 
 socket.on('newPicture', function(msg) {
   document.getElementById('pictureContainer').src=msg;
@@ -43,6 +53,7 @@ socket.on('server-msg', function(msg) {
     case "light":
       document.body.style.backgroundColor = "white";
       console.log("white")
+      takePicture();
       break;
     case "dark":
       document.body.style.backgroundColor = "black";

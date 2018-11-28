@@ -1,19 +1,14 @@
 /*
 server.js
-
 Authors:David Goedicke (da.goedicke@gmail.com) & Nikolas Martelaro (nmartelaro@gmail.com)
-
 This code is heavily based on Nikolas Martelaroes interaction-engine code (hence his authorship).
 The  original purpose was:
 This is the server that runs the web application and the serial
 communication with the micro controller. Messaging to the micro controller is done
 using serial. Messaging to the webapp is done using WebSocket.
-
 //-- Additions:
 This was extended by adding webcam functionality that takes images remotely.
-
 Usage: node server.js SERIAL_PORT (Ex: node server.js /dev/ttyUSB0)
-
 Notes: You will need to specify what port you would like the webapp to be
 served from. You will also need to include the serial port address as a command
 line input.
@@ -28,6 +23,12 @@ var SerialPort = require('serialport'); // serial library
 var Readline = SerialPort.parsers.Readline; // read serial data as lines
 //-- Addition:
 var NodeWebcam = require( "node-webcam" );// load the webcam module
+
+//Google Vision
+const vision = require('@google-cloud/vision');
+
+// Creates a client
+const client = new vision.ImageAnnotatorClient();
 
 //---------------------- WEBAPP SERVER SETUP ---------------------------------//
 // use express to create the simple webapp
@@ -111,6 +112,7 @@ io.on('connect', function(socket) {
   });
 
   //-- Addition: This function is called when the client clicks on the `Take a picture` button.
+  
   socket.on('takePicture', function() {
     /// First, we create a name for the new picture.
     /// The .replace() function removes all special characters from the date.
@@ -123,7 +125,21 @@ io.on('connect', function(socket) {
     NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
     io.emit('newPicture',(imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
     /// The browser will take this new name and load the picture from the public folder.
-  });
+    
+    // Google Vision - take picture
+    client.faceDetection('public/'+imageName+'.jpg').then(results => {
+        const faces = results[0].faceAnnotations;
+        const numFaces = faces.length;
+        //test//
+        console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
+        io.emit('facesResult',(numFaces));
+        callback(null, faces);
+      }).catch(err => {
+        console.error('ERROR:', err);
+        callback(err);
+      });
+    });
+    //end of Google Vision
 
   });
   // if you get the 'disconnect' message, say the user disconnected
