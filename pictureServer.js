@@ -32,7 +32,7 @@ const client = new vision.ImageAnnotatorClient();
 
 //---------------------- WEBAPP SERVER SETUP ---------------------------------//
 // use express to create the simple webapp
-capp.use(express.static('public')); // find pages in public directory
+app.use(express.static('public')); // find pages in public directory
 
 // check to make sure that the user provides the serial port for the Arduino
 // when running the server
