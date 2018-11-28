@@ -128,12 +128,14 @@ io.on('connect', function(socket) {
     
     // Google Vision - take picture
     client.faceDetection('public/'+imageName+'.jpg').then(results => {
-        const faces = results[0].faceAnnotations;
-        const numFaces = faces.length;
-        //test//
-        console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
-        io.emit('facesResult',(numFaces));
-        callback(null, faces);
+        // const faces = results[0].faceAnnotations;
+        // const numFaces = faces.length;
+        // //test//
+        // console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
+        // io.emit('facesResult',(numFaces));
+        // callback(null, faces);
+        debug.log(results[0].imagePropertiesAnnotation.dominantColors.colors);
+
       }).catch(err => {
         console.error('ERROR:', err);
         callback(err);
