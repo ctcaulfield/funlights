@@ -127,19 +127,21 @@ io.on('connect', function(socket) {
     /// The browser will take this new name and load the picture from the public folder.
     
     // Google Vision - take picture
-    client.faceDetection('public/'+imageName+'.jpg').then(results => {
-        const faces = results[0].faceAnnotations;
-        const numFaces = faces.length;
-        //test//
-        console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
-        io.emit('facesResult',(numFaces));
-        callback(null, faces);
-        // console.log(results);
-        // console.log(results[0].imagePropertiesAnnotation.dominantColors.colors);
+    client.imageProperties('public/'+imageName+'.jpg').then(results => {
+         const faces = results[0].faceAnnotations;
+         const numFaces = faces.length;
+         //test//
+         console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
+         io.emit('facesResult',(numFaces));
+         console.log(results);
+
+        //callback(null, faces);
+        //console.log(results);
+        //console.log(results[0].imagePropertiesAnnotation.dominantColors.colors);
 
       }).catch(err => {
         console.error('ERROR:', err);
-        callback(err);
+        //callback(err);
       });
     });
     //end of Google Vision
