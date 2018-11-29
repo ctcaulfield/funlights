@@ -148,7 +148,7 @@ io.on('connect', function(socket) {
       var pxFraction = parseInt(dominantColors[0]['pixelFraction'] * 32);
 
       var data = [r,g,b,pxFraction];
-      serial.emit('[' + data.toString() + ']');
+      serial.write(data.toString());
 
       }).catch(err => {
         console.error('ERROR:', err);

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "tidal-advantage-223920",
+  "private_key_id": "30b59b83e908665c20fb80c712cbb9cd66631795",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDJOawuu7LsoJQh\nffPOUab5L1kVqA//0/VyJA7ywKf7VtnBBKpqg3/bdf6Mf1kG1r0OJLZQ2fMQDlbC\nIhmQwCBoBnhq2aaTMsoXT76lSBjA+K9A4Atmtf2JVktEdGxR5eGpQctUKbyYStBO\nhs1XWs3YEQCYOibkaZy3VYBcqL3i3kAcqcDs27F4s4phOG2oBWWhPpIZqH0yo3cv\n50UOP6r5hr3Z4rK/OiCxdeCt9G9AN3IDRPFk882JlQVDaId6QLM1o6GDxI8rzVg5\nC3Dvy3CdBaEutaolXYhyeM/gBgCgFl1XijkIdkdBZSv1rAgCYgkWeGfnE9So651k\nQpvk3uPnAgMBAAECggEAB0IHxlsUeI7QLlG921QRoDec0HhSihPfQgHanNc7F93e\n688wcGK+2AUZAdX5ZD2W7cLVj/P/MuCO24thqFltsc2DRriuq+zZ4jOzo4AxYwsf\n6HNMUKTsI1R+ptZGLpa1PXwh39luM9YFo8IeokckWTs/w2iG4kKMRFvr+IDznGep\nv7Yp4AkT0vixl3Yk7OxAanNCvCqso/0kxs+XY0r0CeFaEQaDuzQ5Oyv1BOOQgfSK\nYx+WHMkAqlHKSayG1C0+kMdP6hV1zSQYU3GWEzqV1wGzKEg7USs/0sCfGvDUwYeg\n92Ps6Mh9oVr5200IqVuYyrKFKgmt78q+q/2xdlP+9QKBgQDpC1DbdfqOp3m9hgzB\nnIJJ6vgE1DNxbgMeAY1x6Zahsl0sI4o56frdWsbN3O9yfz0YtOBzPmbuxOcQ/pmU\n/RReW8E37WZXNxgsnvrGxopzVW17DdBGCxdkCpRKaeLKt8sVvKB0al2OzBIGQJYZ\nmRULubVT3k7dXGj2VBX7O1hTtQKBgQDdC/pXm4/NBXpbgTiXAnxygnQgIdY182YO\nEBPg36MZG4xFaT8HtZxaTyw/AD8np/AKnAcKpVsFphJoWc1lB2Pz4p2fNNvSRUHM\nul2b3iGhJMWiebHm/gl1rw0FvAh+X9BqUBKLz3SacKyrVgLkkWEd9ujROcqeTGsj\nPPhuxTNSqwKBgAkcOiL6L7tX7Lht/x2qgqVlHCEEMqaiiFip8t+bJBpaIK5TDVpK\nPVZd8BuoIWw2cSsAFy4qKFf5NpdBfLuIUT2HFLyc+T07mCRWarNOm6b6lfcTiSrT\n0CxHBZkLHqSSHsxQvW0Po2yrqaC48aU6iMoWjnIi5K5eqHPIwbs6jK9pAoGATF5B\nBVd3XQvRdB+232U6fY1YdWl7SnRnA+DGHWDmRlxgH/L2lcFG3WSREssRBrBcnC2/\nuQvb4J25qlesQIVHIRFgB4sJjyHiU8rnYFxkHfpIVZPZxMZrmj76LssB3DdaGADG\nB4uK63iWDzPOGA2qEeImGXLv77TTJv9/jTWQP7UCgYBvbPAjmSWDMakTZoVTJmTy\nVWiE3J/4NNhpkr1K+4+PHD0lDbD3u539s1e/B9ozAiaR15Z6QP6Z3J4T80Itd8B1\n4nx0mCDItlbIpCAWsEjJwyq8GXhyYm4MTJoSHimHSwE1EbDUVJBs8pKmziLGCll0\n2InD6WPwrOif3cMHKdPv/w==\n-----END PRIVATE KEY-----\n",
+  "client_email": "raspberrypi@tidal-advantage-223920.iam.gserviceaccount.com",
+  "client_id": "109175528303215809446",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/raspberrypi%40tidal-advantage-223920.iam.gserviceaccount.com"
+}
+
