@@ -36,6 +36,7 @@ app.use(express.static('public')); // find pages in public directory
 
 // check to make sure that the user provides the serial port for the Arduino
 // when running the server
+
 if (!process.argv[2]) {
   console.error('Usage: node ' + process.argv[1] + ' SERIAL_PORT');
   process.exit(1);
@@ -79,12 +80,14 @@ var Webcam = NodeWebcam.create( opts ); //starting up the webcam
 
 //---------------------- SERIAL COMMUNICATION (Arduino) ----------------------//
 // start the serial port connection and read on newlines
+
 const serial = new SerialPort(process.argv[2], {});
 const parser = new Readline({
   delimiter: '\r\n'
 });
 
 // Read data that is available on the serial port and send it to the websocket
+
 serial.pipe(parser);
 parser.on('data', function(data) {
   console.log('Data:', data);
@@ -112,7 +115,7 @@ io.on('connect', function(socket) {
   });
 
   //-- Addition: This function is called when the client clicks on the `Take a picture` button.
-  
+
   socket.on('takePicture', function() {
     /// First, we create a name for the new picture.
     /// The .replace() function removes all special characters from the date.
@@ -125,19 +128,27 @@ io.on('connect', function(socket) {
     NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
     io.emit('newPicture',(imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
     /// The browser will take this new name and load the picture from the public folder.
-    
+
     // Google Vision - take picture
     client.imageProperties('public/'+imageName+'.jpg').then(results => {
-         const faces = results[0].faceAnnotations;
-         const numFaces = faces.length;
-         //test//
-         console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
-         io.emit('facesResult',(numFaces));
-         console.log(results);
+      const faces = results[0].faceAnnotations;
+      const numFaces = faces.length;
+      //test//
+      console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
+      io.emit('facesResult',(numFaces));
+      var dominantColors = results[0]['imagePropertiesAnnotation']['dominantColors']['colors'];
 
-        //callback(null, faces);
-        //console.log(results);
-        //console.log(results[0].imagePropertiesAnnotation.dominantColors.colors);
+      dominantColors.forEach(function(colorObj) {
+        console.log(colorObj['color']);
+      });
+
+      var r = dominantColors[0]['color']['red'];
+      var g = dominantColors[0]['color']['green'];
+      var b = dominantColors[0]['color']['blue'];
+      var pxFraction = parseInt(dominantColors[0]['pixelFraction'] * 32);
+
+      var data = [r,g,b,pxFraction];
+      serial.emit('[' + data.toString() + ']');
 
       }).catch(err => {
         console.error('ERROR:', err);
@@ -150,6 +161,6 @@ io.on('connect', function(socket) {
   // if you get the 'disconnect' message, say the user disconnected
   socket.on('disconnect', function() {
     console.log('user disconnected');
-  });
+  }); 
 });
 //----------------------------------------------------------------------------//
