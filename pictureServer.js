@@ -142,15 +142,19 @@ io.on('connect', function(socket) {
       var sorrow = faces[0].sorrowLikelihood;
       var surprise = faces[0].surpriseLikelihood;
 
-      if (joy == ("LIKELY" || "VERY_LIKELY")) {
-        serial.write("J");
-      } else if (anger == ("LIKELY" || "VERY_LIKELY")) {
-        serial.write("A");
-      } else if (sorrow == ("LIKELY" || "VERY_LIKELY")) {
-        serial.write("S");
-      } else if (surprise == ("LIKELY" || "VERY_LIKELY")) {
-        serial.write("U");
-      ]
+      console.log(joy, anger, sorrow, surprise);
+
+      if (joy != "VERY_UNLIKELY") {
+        serial.write('J');
+      } else if (anger != "VERY_UNLIKELY") {
+        serial.write('A');
+      } else if (sorrow != "VERY_UNLIKELY") {
+        serial.write('S');
+      } else if (surprise != "VERY_UNLIKELY") {
+        serial.write('U');
+      } else {
+        serial.write('Q');
+      }
 
       }).catch(err => {
         console.error('ERROR:', err);
