@@ -130,25 +130,27 @@ io.on('connect', function(socket) {
     /// The browser will take this new name and load the picture from the public folder.
 
     // Google Vision - take picture
-    client.imageProperties('public/'+imageName+'.jpg').then(results => {
+    client.faceDetection('public/'+imageName+'.jpg').then(results => {
       const faces = results[0].faceAnnotations;
       const numFaces = faces.length;
       //test//
       console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
       io.emit('facesResult',(numFaces));
-      var dominantColors = results[0]['imagePropertiesAnnotation']['dominantColors']['colors'];
 
-      dominantColors.forEach(function(colorObj) {
-        console.log(colorObj['color']);
-      });
+      var joy = faces[0].joyLikelihood;
+      var anger = faces[0].angerLikelihood;
+      var sorrow = faces[0].sorrowLikelihood;
+      var surprise = faces[0].surpriseLikelihood;
 
-      var r = dominantColors[0]['color']['red'];
-      var g = dominantColors[0]['color']['green'];
-      var b = dominantColors[0]['color']['blue'];
-      var pxFraction = parseInt(dominantColors[0]['pixelFraction'] * 32);
-
-      var data = [r,g,b,pxFraction];
-      serial.emit('[' + data.toString() + ']');
+      if (joy == ("LIKELY" || "VERY_LIKELY")) {
+        serial.write("J");
+      } else if (anger == ("LIKELY" || "VERY_LIKELY")) {
+        serial.write("A");
+      } else if (sorrow == ("LIKELY" || "VERY_LIKELY")) {
+        serial.write("S");
+      } else if (surprise == ("LIKELY" || "VERY_LIKELY")) {
+        serial.write("U");
+      ]
 
       }).catch(err => {
         console.error('ERROR:', err);
@@ -161,6 +163,6 @@ io.on('connect', function(socket) {
   // if you get the 'disconnect' message, say the user disconnected
   socket.on('disconnect', function() {
     console.log('user disconnected');
-  }); 
+  });
 });
 //----------------------------------------------------------------------------//
