@@ -147,7 +147,7 @@ io.on('connect', function(socket) {
       if (joy != "VERY_UNLIKELY") {
         serial.write('J');
       } else if (anger != "VERY_UNLIKELY") {
-        serial.write('A');
+        serial.write('B');
       } else if (sorrow != "VERY_UNLIKELY") {
         serial.write('S');
       } else if (surprise != "VERY_UNLIKELY") {

@@ -12,16 +12,14 @@
 
 RGBmatrixPanelHalfScan matrix(A, B, C, CLK, LAT, OE, false);
 
+char result;
 
-int led = 13; // led that we will toggle
-char inChar;  // character we will use for messages from the RPi
-
-int button = 2;
+int button = 8;
 int buttonState;
 
 void setup() {
   Serial.begin(9600);
-  pinMode(led, OUTPUT);
+  //pinMode(led, OUTPUT);
   pinMode(button, INPUT);
   matrix.begin();
 }
@@ -29,17 +27,24 @@ void setup() {
 void loop() {
   // read the character we recieve on the serial port from the RPi
   if(Serial.available()) {
-    inChar = (char)Serial.read();
-  }
-
-  // if we get a 'H', turn the LED on, else turn it off
-  if(inChar == 'H'){
-    digitalWrite(led, HIGH);
-    matrix.drawPixel(0, 0, matrix.Color333(0, 255, 0));
-  }
-  else{
-    digitalWrite(led, LOW);
-    matrix.drawPixel(0, 2, matrix.Color333(255, 0, 0));
+    //inChar = (char)Serial.read();
+    //String result = Serial.readString();
+    result = (char)Serial.read();
+    Serial.println(result);
+    //Serial.println(result);
+    if(result == 'J'){
+      matrix.fillScreen(matrix.Color333(0, 255, 0));
+    } else if(result == 'S'){
+      matrix.fillScreen(matrix.Color333(0, 0, 255));
+    } else if(result == 'B'){
+      matrix.fillScreen(matrix.Color333(7, 0, 0));
+    } else if(result == 'U'){
+      matrix.fillScreen(matrix.Color333(255, 255, 0));
+    } else if (result=='Q'){
+      matrix.fillScreen(matrix.Color333(2, 0, 7));
+    } else {
+      matrix.fillScreen(matrix.Color333(0,0,0));
+    }   
   }
 
   // Button event checker - if pressed, send message to RPi
@@ -53,4 +58,4 @@ void loop() {
       Serial.println("dark");
     }
   }
-}
+}  
