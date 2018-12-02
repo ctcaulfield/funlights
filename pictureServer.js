@@ -30,6 +30,14 @@ const vision = require('@google-cloud/vision');
 // Creates a client
 const client = new vision.ImageAnnotatorClient();
 
+var likelihoodNumbers = {
+  "VERY_UNLIKELY": 0,
+  "UNLIKELY": 1,
+  "POSSIBLE": 2,
+  "LIKELY": 3,
+  "VERY_LIKELY": 4
+};
+
 //---------------------- WEBAPP SERVER SETUP ---------------------------------//
 // use express to create the simple webapp
 app.use(express.static('public')); // find pages in public directory
@@ -99,6 +107,8 @@ parser.on('data', function(data) {
 //---------------------- WEBSOCKET COMMUNICATION (web browser)----------------//
 // this is the websocket event handler and say if someone connects
 // as long as someone is connected, listen for messages
+
+
 io.on('connect', function(socket) {
   console.log('a user connected');
 
@@ -137,23 +147,41 @@ io.on('connect', function(socket) {
       console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
       io.emit('facesResult',(numFaces));
 
-      var joy = faces[0].joyLikelihood;
-      var anger = faces[0].angerLikelihood;
-      var sorrow = faces[0].sorrowLikelihood;
-      var surprise = faces[0].surpriseLikelihood;
+      if (numFaces == 1) {
 
-      console.log(joy, anger, sorrow, surprise);
+          var likelikhood = [
+            {"emotion": "joy", "prob": likelihoodNumbers[faces[0].joyLikelihood], "char": 'J'},
+            {"emotion": "anger", "prob": likelihoodNumbers[faces[0].angerLikelihood], "char": 'A'},
+            {"emotion": "sorrow", "prob": likelihoodNumbers[faces[0].sorrowLikelihood], "char": 'S'},
+            {"emotion": "surprise", "prob": likelihoodNumbers[faces[0].surpriseLikelihood], "char": 'U'},
+          ];
 
-      if (joy != "VERY_UNLIKELY") {
-        serial.write('J');
-      } else if (anger != "VERY_UNLIKELY") {
-        serial.write('B');
-      } else if (sorrow != "VERY_UNLIKELY") {
-        serial.write('S');
-      } else if (surprise != "VERY_UNLIKELY") {
-        serial.write('U');
+          likelihood.sort(function(a, b) {
+            if (a["prob"] > b["prob"]) return -1;
+            if (a["prob"] < b["prob"]) return 1;
+            return 0;
+          });
+
+          console.log(likelihood);
+
+          if (likelihood[0]["prob"] > 0) {
+            // Send the most likely emotion
+            console.log('most likely emotion is ' + likelihood[0]['emotion']);
+            serial.write(likelihood[0]["char"]);
+          } else {
+            // All emotions are very unlikely
+            console.log('All emotions unlikely');
+            serial.write('Q');
+          }
+
+      } else if (numFaces > 1) {
+          // Multiple faces
+          console.log('Multiple faces');
+          //serial.write('M');
       } else {
-        serial.write('Q');
+          // No faces
+          console.log('No faces');
+          //serial.write('N');
       }
 
       }).catch(err => {
@@ -170,3 +198,58 @@ io.on('connect', function(socket) {
   });
 });
 //----------------------------------------------------------------------------//
+
+/*
+//Uncomment for testing face recognition logic by itself w/o receiving info from camera or sending info to LED
+//(comment out anything related to serial or webcam)
+
+client.faceDetection('public/testImages/none.jpg').then(results => {
+  const faces = results[0].faceAnnotations;
+  const numFaces = faces.length;
+  //test//
+  console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
+  io.emit('facesResult',(numFaces));
+
+  if (numFaces == 1) {
+
+      var likelihood = [
+        {"emotion": "joy", "prob": likelihoodNumbers[faces[0].joyLikelihood], "char": 'J'},
+        {"emotion": "anger", "prob": likelihoodNumbers[faces[0].angerLikelihood], "char": 'A'},
+        {"emotion": "sorrow", "prob": likelihoodNumbers[faces[0].sorrowLikelihood], "char": 'S'},
+        {"emotion": "surprise", "prob": likelihoodNumbers[faces[0].surpriseLikelihood], "char": 'U'},
+      ];
+
+      likelihood.sort(function(a, b) {
+        if (a["prob"] > b["prob"]) return -1;
+        if (a["prob"] < b["prob"]) return 1;
+        return 0;
+      });
+
+      console.log(likelihood);
+
+      if (likelihood[0]["prob"] > 0) {
+        // Send the most likely emotion
+        console.log('most likely emotion is ' + likelihood[0]['emotion']);
+        //serial.write(likelihood[0]["char"]);
+      } else {
+        // All emotions are very unlikely
+        console.log('All emotions unlikely');
+        //serial.write('Q');
+      }
+
+  } else if (numFaces > 1) {
+      // Multiple faces
+      console.log('Multiple faces');
+      //serial.write('M');
+  } else {
+      // No faces
+      console.log('No faces');
+      //serial.write('N');
+  }
+
+  }).catch(err => {
+    console.error('ERROR:', err);
+    //callback(err);
+  });
+//end of Google Vision
+*/
