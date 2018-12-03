@@ -74,7 +74,7 @@ var opts = { //These Options define how the webcam is operated.
     //Which camera to use
     //Use Webcam.list() for results
     //false for default device
-    device: 'USB2.0 PC CAMERA',
+    device: false,
     // [location, buffer, base64]
     // Webcam.CallbackReturnTypes
     callbackReturn: "location",
