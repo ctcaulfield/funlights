@@ -10,7 +10,7 @@ from skimage import io, transform
 image = io.imread("q.png")
 
 image = transform.resize(image, [32,32])
-#io.imsave("anger-sm.png", image) #uncomment to save 32x32 img
+io.imsave("q-sm.png", image) #uncomment to save 32x32 img
 
 print image[0][0]
 f = open("matrix.txt", "w")

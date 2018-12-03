@@ -1,4 +1,29 @@
-matrix.drawPixel(0,0,matrix.Color333(0,0,0));
+#include <ArduinoJson.h>
+
+#include <Adafruit_GFX.h>   // Core graphics library
+#include <RGBmatrixPanelHalfScan.h> // Hardware-specific library
+
+#define CLK 11  // MUST be on PORTB! (Use pin 11 on Mega)
+#define OE  9
+#define LAT 10
+#define A   A0
+#define B   A1
+#define C   A2
+
+RGBmatrixPanelHalfScan matrix(A, B, C, CLK, LAT, OE, false);
+
+char result;
+
+int button = 8;
+int buttonState;
+
+
+void setup() {
+  Serial.begin(9600);
+  //pinMode(led, OUTPUT);
+  pinMode(button, INPUT);
+  matrix.begin();
+  matrix.drawPixel(0,0,matrix.Color333(0,0,0));
 matrix.drawPixel(0,1,matrix.Color333(0,0,0));
 matrix.drawPixel(0,2,matrix.Color333(0,0,0));
 matrix.drawPixel(0,3,matrix.Color333(0,0,0));
@@ -1022,3 +1047,13 @@ matrix.drawPixel(31,28,matrix.Color333(0,0,0));
 matrix.drawPixel(31,29,matrix.Color333(0,0,0));
 matrix.drawPixel(31,30,matrix.Color333(0,0,0));
 matrix.drawPixel(31,31,matrix.Color333(0,0,0));
+
+
+matrix.dumpMatrix();
+
+}
+
+void loop() { 
+  
+  
+}  

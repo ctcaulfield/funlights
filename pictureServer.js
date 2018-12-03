@@ -74,7 +74,7 @@ var opts = { //These Options define how the webcam is operated.
     //Which camera to use
     //Use Webcam.list() for results
     //false for default device
-    device: false,
+    device: 'USB2.0 PC CAMERA',
     // [location, buffer, base64]
     // Webcam.CallbackReturnTypes
     callbackReturn: "location",
@@ -83,7 +83,9 @@ var opts = { //These Options define how the webcam is operated.
 };
 var Webcam = NodeWebcam.create( opts ); //starting up the webcam
 //----------------------------------------------------------------------------//
-
+Webcam.list( function( list ) {
+    console.log(list);
+});
 
 
 //---------------------- SERIAL COMMUNICATION (Arduino) ----------------------//
@@ -132,7 +134,7 @@ io.on('connect', function(socket) {
     /// This way we can use it as the filename.
     var imageName = new Date().toString().replace(/[&\/\\#,+()$~%.'":*?<>{}\s-]/g, '');
 
-    console.log('making a making a picture at'+ imageName); // Second, the name is logged to the console.
+    console.log('Taking a picture at'+ imageName); // Second, the name is logged to the console.
 
     //Third, the picture is  taken and saved to the `public/`` folder
     NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
@@ -149,9 +151,9 @@ io.on('connect', function(socket) {
 
       if (numFaces == 1) {
 
-          var likelikhood = [
+          var likelihood = [
             {"emotion": "joy", "prob": likelihoodNumbers[faces[0].joyLikelihood], "char": 'J'},
-            {"emotion": "anger", "prob": likelihoodNumbers[faces[0].angerLikelihood], "char": 'A'},
+            {"emotion": "anger", "prob": likelihoodNumbers[faces[0].angerLikelihood], "char": 'B'},
             {"emotion": "sorrow", "prob": likelihoodNumbers[faces[0].sorrowLikelihood], "char": 'S'},
             {"emotion": "surprise", "prob": likelihoodNumbers[faces[0].surpriseLikelihood], "char": 'U'},
           ];
@@ -177,11 +179,11 @@ io.on('connect', function(socket) {
       } else if (numFaces > 1) {
           // Multiple faces
           console.log('Multiple faces');
-          //serial.write('M');
+          serial.write('Q');
       } else {
           // No faces
           console.log('No faces');
-          //serial.write('N');
+          serial.write('Q');
       }
 
       }).catch(err => {
