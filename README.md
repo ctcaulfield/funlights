@@ -87,15 +87,19 @@ When we first tried to power up the panel and Arduino, we mistakenly used a 9V a
 # Final project deliverable - November 8
 
 **Hardware Constraints**
+
 After completing the backend logic of converting an image onto a 32x32 LED display. We discovered displaying the image was much harder than expected! First the Arduino Uno has a limited amound of SRAM (2k bytes). The 32x32 LED takes up 1.6k bytes leaving .4 remaining for all other SRAM processing. This makes it difficult to manage the different communications going in and out of the Ardunio such as the LED and Serial reader/writer. Secondly, the most popular LED display library on Github provided limited documentation about how to display a custom 32x32 image on the LED display. Finally, writing color pixels to the serial was also difficult, we were only successful at reading in single 'Chars'. Initially we wanted to display strings of RGB values for each pixel.
 
 Because of these issues with the LED display, SRAM, and Searial reader we focused on how to display information on the LED given a single Char value. Displaying a image on the LED was no longer feasible, but display emotion was. We decided to build out this functionality and enhance it as our final project.
 
 **Interaction Diagram - revised**
+
 Image here
 
 **Final Code**
+
 All final project code can be viewed in the Master branch. 
 
 **Final Video**
+
 Final video can be found here: https://www.youtube.com/watch?v=Z7KM9nJAe3Y
