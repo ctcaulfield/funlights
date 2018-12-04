@@ -84,7 +84,7 @@ When we first tried to power up the panel and Arduino, we mistakenly used a 9V a
 * Incorporate webcam and button into device to use webcam as source for the initial photo
 * Incoporate LCD panel into device to display instructions/feedback to the user
 
-# Final project deliverable - November 8
+# Final project deliverable - December 4
 
 **Hardware Constraints**
 
@@ -92,9 +92,9 @@ After completing the backend logic of converting an image onto a 32x32 LED displ
 
 Because of these issues with the LED display, SRAM, and Searial reader we focused on how to display information on the LED given a single Char value. Displaying a image on the LED was no longer feasible, but display emotion was. We decided to build out this functionality and enhance it as our final project.
 
-**Interaction Diagram - revised**
+**State Diagram - revised**
 
-Image here
+<img src='img/state@2x.png'>
 
 **Final Code**
 
