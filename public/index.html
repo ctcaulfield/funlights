@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf8"/>
+        <title>FunLights</title>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+
+        <script src="/socket.io/socket.io.js"></script>
+        <style>
+          body {
+            background-color: #000;
+            font-family: "Montserrat", sans-serif;
+            text-align: center;
+          }
+
+          p {
+            color: #fff;
+          }
+
+          #logo {
+            width: 600px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+            transition: all 1s;
+          }
+
+          #logo.animate {
+            width: 150px;
+            margin-bottom: 10px;
+          }
+
+          #takePictureButton {
+            background-color: #fff;
+            width: 200px;
+            padding: 20px;
+            text-align: center;
+            font-size: 20px;
+            margin: 10px auto;
+            border-radius: 4px;
+            cursor: pointer;
+          }
+
+          #takePictureButton:hover {
+            background-color: #d8d8d8;
+          }
+
+          #pictureContainer {
+            display: none;
+            max-width: 500px;
+          }
+
+          #header {
+              position: fixed;
+              top: 0;
+              width: 100vw;
+              padding: 50px 0;
+              text-align: right;
+          }
+
+          #header a {
+              color: #d8d8d8;
+              text-decoration: none;
+              margin-right: 50px;
+          }
+
+          #header a:hover {
+              color: #00bff8
+          }
+
+        </style>
+    </head>
+    <body>
+        <img src="img/logo@2x.png" id="logo">
+        <div id="takePictureButton" onclick="takePicture()">📸 Take a picture</div>
+        <p>Or just press the yellow button!</p>
+      </br>
+        <h1 id="people" style="color:white"></h1>
+        <img src="" id= "pictureContainer" alt="WebCam image made by the webserver">
+        <div id="header">
+          <a href="https://github.com/ctcaulfield/funlights" target="_blank">Github</a>
+        </div>
+        <script src="client.js"></script>
+    </body>
+</html>

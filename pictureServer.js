@@ -1,0 +1,261 @@
+/*
+server.js
+Authors:David Goedicke (da.goedicke@gmail.com) & Nikolas Martelaro (nmartelaro@gmail.com)
+This code is heavily based on Nikolas Martelaroes interaction-engine code (hence his authorship).
+The  original purpose was:
+This is the server that runs the web application and the serial
+communication with the micro controller. Messaging to the micro controller is done
+using serial. Messaging to the webapp is done using WebSocket.
+//-- Additions:
+This was extended by adding webcam functionality that takes images remotely.
+Usage: node server.js SERIAL_PORT (Ex: node server.js /dev/ttyUSB0)
+Notes: You will need to specify what port you would like the webapp to be
+served from. You will also need to include the serial port address as a command
+line input.
+*/
+
+var express = require('express'); // web server application
+var app = express(); // webapp
+var http = require('http').Server(app); // connects http library to server
+var io = require('socket.io')(http); // connect websocket library to server
+var serverPort = 8000;
+var SerialPort = require('serialport'); // serial library
+var Readline = SerialPort.parsers.Readline; // read serial data as lines
+//-- Addition:
+var NodeWebcam = require( "node-webcam" );// load the webcam module
+
+//Google Vision
+const vision = require('@google-cloud/vision');
+
+// Creates a client
+const client = new vision.ImageAnnotatorClient();
+
+var likelihoodNumbers = {
+  "VERY_UNLIKELY": 0,
+  "UNLIKELY": 1,
+  "POSSIBLE": 2,
+  "LIKELY": 3,
+  "VERY_LIKELY": 4
+};
+
+//---------------------- WEBAPP SERVER SETUP ---------------------------------//
+// use express to create the simple webapp
+app.use(express.static('public')); // find pages in public directory
+
+// check to make sure that the user provides the serial port for the Arduino
+// when running the server
+
+if (!process.argv[2]) {
+  console.error('Usage: node ' + process.argv[1] + ' SERIAL_PORT');
+  process.exit(1);
+}
+
+// start the server and say what port it is on
+http.listen(serverPort, function() {
+  console.log('listening on *:%s', serverPort);
+});
+//----------------------------------------------------------------------------//
+
+//--Additions:
+//----------------------------WEBCAM SETUP------------------------------------//
+//Default options
+var opts = { //These Options define how the webcam is operated.
+    //Picture related
+    width: 1280, //size
+    height: 720,
+    quality: 100,
+    //Delay to take shot
+    delay: 0,
+    //Save shots in memory
+    saveShots: true,
+    // [jpeg, png] support varies
+    // Webcam.OutputTypes
+    output: "jpeg",
+    //Which camera to use
+    //Use Webcam.list() for results
+    //false for default device
+    device: false,
+    // [location, buffer, base64]
+    // Webcam.CallbackReturnTypes
+    callbackReturn: "location",
+    //Logging
+    verbose: false
+};
+var Webcam = NodeWebcam.create( opts ); //starting up the webcam
+//----------------------------------------------------------------------------//
+Webcam.list( function( list ) {
+    console.log(list);
+});
+
+
+//---------------------- SERIAL COMMUNICATION (Arduino) ----------------------//
+// start the serial port connection and read on newlines
+
+const serial = new SerialPort(process.argv[2], {});
+const parser = new Readline({
+  delimiter: '\r\n'
+});
+
+// Read data that is available on the serial port and send it to the websocket
+
+serial.pipe(parser);
+parser.on('data', function(data) {
+  console.log('Data:', data);
+  io.emit('server-msg', data);
+});
+//----------------------------------------------------------------------------//
+
+
+//---------------------- WEBSOCKET COMMUNICATION (web browser)----------------//
+// this is the websocket event handler and say if someone connects
+// as long as someone is connected, listen for messages
+
+
+io.on('connect', function(socket) {
+  console.log('a user connected');
+
+  // if you get the 'ledON' msg, send an 'H' to the Arduino
+  socket.on('ledON', function() {
+    console.log('ledON');
+    serial.write('H');
+  });
+
+  // if you get the 'ledOFF' msg, send an 'L' to the Arduino
+  socket.on('ledOFF', function() {
+    console.log('ledOFF');
+    serial.write('L');
+  });
+
+  //-- Addition: This function is called when the client clicks on the `Take a picture` button.
+
+  socket.on('takePicture', function() {
+    /// First, we create a name for the new picture.
+    /// The .replace() function removes all special characters from the date.
+    /// This way we can use it as the filename.
+    var imageName = new Date().toString().replace(/[&\/\\#,+()$~%.'":*?<>{}\s-]/g, '');
+
+    console.log('Taking a picture at'+ imageName); // Second, the name is logged to the console.
+
+    //Third, the picture is  taken and saved to the `public/`` folder
+    NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
+    io.emit('newPicture',(imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
+    //io.emit('newPicture','testImages/surprise.jpg');
+    /// The browser will take this new name and load the picture from the public folder.
+
+    // Google Vision - take picture
+    client.faceDetection('public/'+imageName+'.jpg').then(results => {
+    //client.faceDetection('public/testImages/surprise.jpg').then(results => {
+      const faces = results[0].faceAnnotations;
+      const numFaces = faces.length;
+      //test//
+      console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
+
+
+      if (numFaces == 1) {
+
+          var likelihood = [
+            {"emotion": "joy", "prob": likelihoodNumbers[faces[0].joyLikelihood], "char": 'J'},
+            {"emotion": "anger", "prob": likelihoodNumbers[faces[0].angerLikelihood], "char": 'B'},
+            {"emotion": "sorrow", "prob": likelihoodNumbers[faces[0].sorrowLikelihood], "char": 'S'},
+            {"emotion": "surprise", "prob": likelihoodNumbers[faces[0].surpriseLikelihood], "char": 'U'},
+          ];
+
+          likelihood.sort(function(a, b) {
+            if (a["prob"] > b["prob"]) return -1;
+            if (a["prob"] < b["prob"]) return 1;
+            return 0;
+          });
+
+          console.log(likelihood);
+
+          if (likelihood[0]["prob"] > 0) {
+            // Send the most likely emotion
+            console.log('most likely emotion is ' + likelihood[0]['emotion']);
+            serial.write(likelihood[0]["char"]);
+            io.emit('facesResult',likelihood[0]["emotion"]);
+          } else {
+            // All emotions are very unlikely
+            console.log('All emotions unlikely');
+            serial.write('Q');
+            io.emit('facesResult',"no !@#$ idea");
+          }
+
+      } else if (numFaces > 1) {
+          // Multiple faces
+          console.log('Multiple faces');
+          serial.write('Q');
+      } else {
+          // No faces
+          console.log('No faces');
+          serial.write('Q');
+      }
+
+      }).catch(err => {
+        console.error('ERROR:', err);
+        //callback(err);
+      });
+    });
+    //end of Google Vision
+
+  });
+  // if you get the 'disconnect' message, say the user disconnected
+  socket.on('disconnect', function() {
+    console.log('user disconnected');
+  });
+});
+//----------------------------------------------------------------------------//
+
+/*
+//Uncomment for testing face recognition logic by itself w/o receiving info from camera or sending info to LED
+//(comment out anything related to serial or webcam)
+
+client.faceDetection('public/testImages/none.jpg').then(results => {
+  const faces = results[0].faceAnnotations;
+  const numFaces = faces.length;
+  //test//
+  console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
+  io.emit('facesResult',(numFaces));
+
+  if (numFaces == 1) {
+
+      var likelihood = [
+        {"emotion": "joy", "prob": likelihoodNumbers[faces[0].joyLikelihood], "char": 'J'},
+        {"emotion": "anger", "prob": likelihoodNumbers[faces[0].angerLikelihood], "char": 'A'},
+        {"emotion": "sorrow", "prob": likelihoodNumbers[faces[0].sorrowLikelihood], "char": 'S'},
+        {"emotion": "surprise", "prob": likelihoodNumbers[faces[0].surpriseLikelihood], "char": 'U'},
+      ];
+
+      likelihood.sort(function(a, b) {
+        if (a["prob"] > b["prob"]) return -1;
+        if (a["prob"] < b["prob"]) return 1;
+        return 0;
+      });
+
+      console.log(likelihood);
+
+      if (likelihood[0]["prob"] > 0) {
+        // Send the most likely emotion
+        console.log('most likely emotion is ' + likelihood[0]['emotion']);
+        //serial.write(likelihood[0]["char"]);
+      } else {
+        // All emotions are very unlikely
+        console.log('All emotions unlikely');
+        //serial.write('Q');
+      }
+
+  } else if (numFaces > 1) {
+      // Multiple faces
+      console.log('Multiple faces');
+      //serial.write('M');
+  } else {
+      // No faces
+      console.log('No faces');
+      //serial.write('N');
+  }
+
+  }).catch(err => {
+    console.error('ERROR:', err);
+    //callback(err);
+  });
+//end of Google Vision
+*/
