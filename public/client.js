@@ -23,26 +23,21 @@ function ledOFF() {
 
 //-- Addition: Forward the `Take a picture` button-press to the webserver.
 function takePicture(){
+  document.getElementById("takePictureButton").innerHTML = "Taking picture...";
   socket.emit('takePicture');
-
 }
 
 //-- Addition: This function receives the new image name and applies it to html element.
 
 socket.on('facesResult', function(msg) {
-  if(msg === 0){
-    document.getElementById("people").innerHTML = "LOL...not - good try";
-  }
-  else if(msg === 1){
-    document.getElementById("people").innerHTML = "Welcome!";
-  }
-  else {
-    document.getElementById("people").innerHTML = "A squad of " + msg + "no thx"
-  }
+    document.getElementById("people").innerHTML = "Most likely emotion: " + msg;
 });
 
 socket.on('newPicture', function(msg) {
+  document.getElementById('logo').classList.add("animate");
+  document.getElementById('pictureContainer').style.display = "inline-block";
   document.getElementById('pictureContainer').src=msg;
+  document.getElementById("takePictureButton").innerHTML = "📸 Take a picture";
 });
 // read the data from the message that the server sent and change the
 // background of the webpage based on the data in the message

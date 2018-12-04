@@ -139,15 +139,17 @@ io.on('connect', function(socket) {
     //Third, the picture is  taken and saved to the `public/`` folder
     NodeWebcam.capture('public/'+imageName, opts, function( err, data ) {
     io.emit('newPicture',(imageName+'.jpg')); ///Lastly, the new name is send to the client web browser.
+    //io.emit('newPicture','testImages/surprise.jpg');
     /// The browser will take this new name and load the picture from the public folder.
 
     // Google Vision - take picture
     client.faceDetection('public/'+imageName+'.jpg').then(results => {
+    //client.faceDetection('public/testImages/surprise.jpg').then(results => {
       const faces = results[0].faceAnnotations;
       const numFaces = faces.length;
       //test//
       console.log('Found ' + numFaces + (numFaces === 1 ? ' face' : ' faces'));
-      io.emit('facesResult',(numFaces));
+
 
       if (numFaces == 1) {
 
@@ -170,10 +172,12 @@ io.on('connect', function(socket) {
             // Send the most likely emotion
             console.log('most likely emotion is ' + likelihood[0]['emotion']);
             serial.write(likelihood[0]["char"]);
+            io.emit('facesResult',likelihood[0]["emotion"]);
           } else {
             // All emotions are very unlikely
             console.log('All emotions unlikely');
             serial.write('Q');
+            io.emit('facesResult',"no !@#$ idea");
           }
 
       } else if (numFaces > 1) {
